@@ -1,29 +1,34 @@
 package client
 
+import node.Node
+import node.RemoteNode
 import protocol.Protocol
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
+import protocol.message.Message
+import protocol.udp.MulticastSender
+import protocol.udp.UDPReceiver
 
 
 class DiscoveryService {
 
-    fun sendMulticast(){
-        val mcPort = Protocol.MULTICAST_PORT
-        val mcIPStr = Protocol.MULTICAST_ADR
-        val udpSocket = DatagramSocket()
+    fun handleResponse() {
 
-        val mcIPAddress = InetAddress.getByName(mcIPStr)
-        val msg = "Hello".toByteArray()
-        val packet = DatagramPacket(msg, msg.size)
-        packet.address = mcIPAddress
-        packet.port = mcPort
-        udpSocket.send(packet)
-
-        println("Sent a  multicast message.")
-        println("Exiting application")
-        udpSocket.close()
     }
 
+    fun sendMulticast() {
+        val sender = MulticastSender(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
+        val msg = Message(payload = "Testing...")
+        sender.sendMulticast(msg)
+        println("multicast sent!")
+        val listener = UDPReceiver(Protocol.CLIENT_RESPONSE_PORT)
+        val nodes = mutableListOf<Node>()
+        while (true) {
+            val msg = listener.receiveMessage()
+            if (msg != null) {
+                println("got response $msg")
+                //nodes.add(RemoteNode(msg.payload.toInt(),))
+            } else
+                println("got invalid response... ignoring")
+        }
+    }
 }
 
