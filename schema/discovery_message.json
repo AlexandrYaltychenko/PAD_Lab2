@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Message",
+  "description": "A header of protocol message with basic fields",
+  "type": "object",
+  "properties": {
+    "Header": {
+      "$ref": "#/definitions/Header"
+    }
+  },
+  "definitions": {
+    "Header": {
+      "properties": {
+        "senderType": {
+          "type": "string",
+          "enum": [
+            "CLIENT",
+            "NODE"
+          ]
+        },
+        "messageType": {
+          "type": "string",
+          "enum": [
+            "UDP_MULTICAST",
+            "UDP_RESPONSE",
+            "TCP_QUERY",
+            "TCP_RESULT"
+          ]
+        },
+        "messageStatus": {
+          "type": "string",
+          "enum": [
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        "responsePort": {
+          "type": "number"
+        },
+        "responseAdr": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "senderType",
+        "messageType",
+        "messageStatus",
+        "responsePort",
+        "responseAdr"
+      ]
+    }
+  }
+}

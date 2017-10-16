@@ -5,7 +5,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import protocol.Protocol
-import protocol.message.Message
+import protocol.message.DiscoveryMessage
+import protocol.message.Header
 import protocol.message.SenderType
 import protocol.udp.MulticastListener
 import protocol.udp.UDPSender
@@ -21,11 +22,9 @@ class LocalNode(override val port: Int, private val nodes: List<Node>) : Node {
             val msg = client.catchMulticast()
             if (msg != null) {
                 println("got multicast message $msg")
-                val response = Message(payload = connectionsCount.toString(),
-                        senderType = SenderType.NODE,
-                        responsePort = port)
+                val response = DiscoveryMessage(Header(senderType = SenderType.NODE, responsePort = port))
                 println("sending response $response")
-                UDPSender(msg.responsePort, msg.responseAdr).sendMessage(response)
+                UDPSender(msg.header.responsePort, msg.header.responseAdr).sendMessage(response)
                 println("response sent!")
             } else println("got invalid multicast message... ignoring...")
         }

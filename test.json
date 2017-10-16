@@ -1,0 +1,9 @@
+{
+  "Header": {
+    "responsePort": 40,
+    "senderType": "NODE",
+    "messageType": "UDP_MULTICAST",
+    "messageStatus": "NORMAL",
+    "responseAdr": "127.0.0.1"
+  }
+}

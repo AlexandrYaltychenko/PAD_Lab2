@@ -7,4 +7,14 @@ object Protocol {
     val DEFAULT_NODE_PORT = 4000
     val CLIENT_RESPONSE_PORT = 11144
     val CLIENT_RESPONSE_ADR = "127.0.0.1"
+    val DISCOVERY_MESSAGE_SCHEMA = """
+        {
+            "senderType" : "Type of sender",
+            "messageType": "Type of message",
+            "messageStatus" : "Status of message",
+            "connections" : 0,
+            "responsePort": 2000,
+            "responseAdrr": "178.168.65.187",
+            "jora":15
+        }"""
 }

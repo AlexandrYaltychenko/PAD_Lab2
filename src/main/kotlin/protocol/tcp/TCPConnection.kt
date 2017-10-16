@@ -1,8 +1,8 @@
 package protocol.tcp
 
-import protocol.asMessage
+import protocol.asDiscoveryMessage
 import protocol.encode
-import protocol.message.Message
+import protocol.message.DiscoveryMessage
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -19,14 +19,14 @@ class TCPConnection(port: Int, host: String) {
         reader = BufferedReader(InputStreamReader(socket.inputStream))
     }
 
-    fun writeMsg(msg: Message) {
+    fun writeMsg(msg: DiscoveryMessage) {
         writer.println(msg.encode())
         writer.flush()
     }
 
-    fun readMsg(): Message? {
+    fun readMsg(): DiscoveryMessage? {
         try {
-            return reader.readLine().asMessage()
+            return reader.readLine().asDiscoveryMessage()
         } catch (e: Exception) {
             return null
         }

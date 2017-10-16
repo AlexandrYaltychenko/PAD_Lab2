@@ -1,9 +1,9 @@
 package client
 
 import node.Node
-import node.RemoteNode
 import protocol.Protocol
-import protocol.message.Message
+import protocol.message.DiscoveryMessage
+import protocol.message.Header
 import protocol.udp.MulticastSender
 import protocol.udp.UDPReceiver
 
@@ -16,7 +16,7 @@ class DiscoveryService {
 
     fun sendMulticast() {
         val sender = MulticastSender(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
-        val msg = Message(payload = "Testing...")
+        val msg = DiscoveryMessage(Header())
         sender.sendMulticast(msg)
         println("multicast sent!")
         val listener = UDPReceiver(Protocol.CLIENT_RESPONSE_PORT)
