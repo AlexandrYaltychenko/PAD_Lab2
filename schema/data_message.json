@@ -1,11 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
   "title": "DiscoveryMessage",
-  "description": "A discovery message (UDP) with basic fields",
+  "description": "A data message (TCP) with basic fields",
   "type": "object",
   "properties": {
     "header": {
       "$ref": "#/definitions/header"
+    },
+    "data":{
+      "$ref": "#/definitions/data"
+    },
+    "level": {
+      "type": "number"
     }
   },
   "required":["header"],
@@ -22,8 +28,6 @@
         "messageType": {
           "type": "string",
           "enum": [
-            "UDP_MULTICAST",
-            "UDP_RESPONSE",
             "TCP_QUERY",
             "TCP_RESULT"
           ]
@@ -34,21 +38,26 @@
             "ERROR",
             "NORMAL"
           ]
-        },
-        "responsePort": {
-          "type": "number"
-        },
-        "responseAdr": {
-          "type": "string"
         }
       },
       "required": [
         "senderType",
         "messageType",
-        "messageStatus",
-        "responsePort",
-        "responseAdr"
+        "messageStatus"
       ]
+    },
+    "data": {
+      "type":"array",
+      "items":{
+        "title":"Book",
+        "type":"object",
+        "properties":{
+          "title":"string",
+          "author":"string",
+          "desc":"desc"
+        },
+        "required":["title,author"]
+      }
     }
   }
 }

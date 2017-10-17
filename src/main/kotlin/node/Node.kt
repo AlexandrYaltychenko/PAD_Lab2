@@ -1,9 +1,9 @@
 package node
 
-import data.Entry
+import data.Book
 interface Node {
     val port : Int
     val host : String
     val connectionsCount : Int
-    suspend fun getData() : List<Entry>
+    suspend fun getData() : List<Book>
 }

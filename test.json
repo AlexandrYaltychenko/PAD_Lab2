@@ -1,5 +1,5 @@
 {
-  "Header": {
+  "header": {
     "responsePort": 40,
     "senderType": "NODE",
     "messageType": "UDP_MULTICAST",

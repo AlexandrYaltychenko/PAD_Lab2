@@ -1,5 +1,7 @@
 package client
 
-fun main(args : Array<String>){
+import kotlinx.coroutines.experimental.runBlocking
+
+fun main(args : Array<String>) = runBlocking{
     DiscoveryService().sendMulticast()
 }
