@@ -6,10 +6,10 @@ import kotlinx.coroutines.experimental.launch
 import node.Node
 import node.RemoteNode
 import protocol.Protocol
-import protocol.message.DiscoveryMessage
-import protocol.message.Header
+import protocol.message.*
 import protocol.udp.MulticastSender
 import protocol.udp.UDPReceiver
+import java.util.*
 
 
 class DiscoveryService {
@@ -19,24 +19,34 @@ class DiscoveryService {
     }
 
     suspend fun sendMulticast() {
+        val level = 0
         val sender = MulticastSender(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
-        val msg = DiscoveryMessage(Header())
+        val msg = DiscoveryMessage(DiscoveryHeader())
+        println("sending multicast...")
         sender.sendMulticast(msg)
-        println("multicast sent!")
         val listener = UDPReceiver(Protocol.CLIENT_RESPONSE_PORT)
         val nodes = mutableListOf<Node>()
-        val processResponse = launch(CommonPool){
+        val processResponse = launch(CommonPool) {
             while (true) {
                 val response = listener.receiveMessage()
                 if (response != null) {
-                    println("got response $response")
-                    nodes.add(RemoteNode(response.header.responsePort,response.header.responseAdr, response.connections))
+                    nodes.add(RemoteNode(response.header.responsePort, response.header.responseAdr, response.connections))
                 }
             }
         }
-        delay(5000)
+        delay(Protocol.DEFAULT_DISCOVERY_TIMEOUT)
         processResponse.cancel()
-        println("Results: ${nodes.joinToString { "(${it.host}:${it.port}  connections: ${it.connectionsCount})"}}")
+        println("selecting maven from ${nodes.size} asked")
+        if (nodes.size > 0) {
+            val maven = nodes.maxBy { it.connectionsCount }
+            val data = maven?.getData(DataMessage(DataHeader(senderType = SenderType.CLIENT,
+                    asked = mutableSetOf()), uid = UUID.randomUUID().toString(),
+                    query = "", level = level))?.data ?: listOf()
+            println("got data (${data.size} items):")
+            for (book in data)
+                println(book)
+        } else
+            println("no asked responsed")
     }
 }
 

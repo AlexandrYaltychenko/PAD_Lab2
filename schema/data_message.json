@@ -52,11 +52,20 @@
         "title":"Book",
         "type":"object",
         "properties":{
-          "title":"string",
-          "author":"string",
-          "desc":"desc"
+          "title": {
+            "type":"string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "desc": {
+            "type":"string"
+          },
+          "year": {
+            "type":"number"
+          }
         },
-        "required":["title,author"]
+        "required":["year","author","title","desc"]
       }
     }
   }

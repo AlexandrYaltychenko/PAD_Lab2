@@ -14,4 +14,12 @@ internal class EncoderKtTest {
         schema.validate(JSONObject(json))
     }
 
+    @org.junit.jupiter.api.Test
+    fun testDataParse(){
+        val str = StringFromFile("test.json")
+        val schema = SchemaLoader.load(JSONObject(StringFromFile(Protocol.DATA_MESSAGE_SCHEMA_ADR)))
+        val json = JSONObject(str)
+        schema.validate(json)
+    }
+
 }

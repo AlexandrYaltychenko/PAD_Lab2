@@ -1,33 +1,31 @@
 package protocol.tcp
 
+import protocol.asDataMessage
 import protocol.asDiscoveryMessage
 import protocol.encode
+import protocol.message.DataMessage
 import protocol.message.DiscoveryMessage
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 
-class TCPConnection(port: Int, host: String) {
-    private val socket = Socket(host, port)
-    private var writer : PrintWriter
-    private var reader : BufferedReader
+class TCPConnection(private val socket : Socket) {
+    private var writer : PrintWriter = PrintWriter(socket.outputStream)
+    private var reader : BufferedReader = BufferedReader(InputStreamReader(socket.inputStream))
 
-    init {
+    constructor(host : String, port : Int) : this(Socket(host,port))
 
-        writer = PrintWriter(socket.outputStream)
-        reader = BufferedReader(InputStreamReader(socket.inputStream))
-    }
-
-    fun writeMsg(msg: DiscoveryMessage) {
+    fun writeMsg(msg: DataMessage) {
         writer.println(msg.encode())
         writer.flush()
     }
 
-    fun readMsg(): DiscoveryMessage? {
+    fun readMsg(): DataMessage? {
         try {
-            return reader.readLine().asDiscoveryMessage()
+            return reader.readLine()?.asDataMessage()
         } catch (e: Exception) {
+            e.printStackTrace()
             return null
         }
     }
