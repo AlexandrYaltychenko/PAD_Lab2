@@ -18,7 +18,6 @@ fun String.asDiscoveryMessage() : DiscoveryMessage? {
     val rawSchema = JSONObject(StringFromFile(Protocol.DISCOVERY_MESSAGE_SCHEMA_ADR))
     val schema = SchemaLoader.load(rawSchema)
     return try {
-        println(this)
         val json = JSONObject(this)
         schema.validate(json)
         ObjectMapper().registerModule(JsonOrgModule()).convertValue(json, DiscoveryMessage::class.java)

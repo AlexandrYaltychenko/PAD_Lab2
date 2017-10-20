@@ -7,5 +7,5 @@ interface Node {
     val port : Int
     val host : String
     val connectionsCount : Int
-    suspend fun getData(request : DataMessage) : DataMessage
+    fun getData(request : DataMessage) : DataMessage
 }

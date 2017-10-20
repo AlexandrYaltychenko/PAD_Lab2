@@ -19,7 +19,6 @@ class MulticastListener(mcPort: Int, mcIPStr: String) {
     fun catchMulticast(): DiscoveryMessage? {
         val packet = DatagramPacket(ByteArray(Protocol.DEFAULT_DATAGRAM_SIZE), Protocol.DEFAULT_DATAGRAM_SIZE)
         mcSocket.receive(packet)
-        (packet.address.hostAddress)
         return try {
             String(packet.data, packet.offset,
                     packet.length).asDiscoveryMessage()

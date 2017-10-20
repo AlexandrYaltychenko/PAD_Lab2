@@ -1,0 +1,37 @@
+{
+  "authors":[
+    "Pushkin",
+    "Lermontov",
+    "Dostoevsky",
+    "Blok",
+    "Esenin",
+    "Tolkien",
+    "Martin",
+    "Turgenev",
+    "Ivanov",
+    "Tolstoi",
+    "Sholohov"
+  ],
+  "titles":[
+    "Kapitanskaia dochka",
+    "Istorii na hutore",
+    "Sinii les",
+    "Dalinii bereg",
+    "Voina i mir",
+    "Tihii Don",
+    "Pervaia Liubov",
+    "Poslednia nadejda",
+    "Ritsari",
+    "Istoria odnogo poeta",
+    "Mumu",
+    "Dubrovskii",
+    "Zelenaia milea",
+    "Krasnii deni",
+    "Geroi nashego vremeni"
+  ],
+  "desc":[
+    "interesnaia kniga",
+    "ocheni interesnaia kniga",
+    "neinteresnaia kniga"
+  ]
+}

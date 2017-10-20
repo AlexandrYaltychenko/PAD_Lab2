@@ -63,6 +63,10 @@
           },
           "year": {
             "type":"number"
+          },
+          "src" : {
+            "type":"number",
+            "min":0
           }
         },
         "required":["year","author","title","desc"]

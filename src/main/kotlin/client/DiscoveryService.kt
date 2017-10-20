@@ -19,7 +19,7 @@ class DiscoveryService {
     }
 
     suspend fun sendMulticast() {
-        val level = 0
+        val level = 1
         val sender = MulticastSender(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
         val msg = DiscoveryMessage(DiscoveryHeader())
         println("sending multicast...")

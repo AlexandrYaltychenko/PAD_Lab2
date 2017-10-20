@@ -9,7 +9,7 @@ import protocol.tcp.TCPConnection
 
 class RemoteNode(override val port: Int, override val host: String = Protocol.CLIENT_RESPONSE_ADR, override val connectionsCount: Int = 0) : Node {
 
-    suspend override fun getData(request: DataMessage): DataMessage {
+    override fun getData(request: DataMessage): DataMessage {
         val connection = TCPConnection(host, port)
         println("getting data from $port...")
         connection.writeMsg(DataMessage(DataHeader(senderType = request.header.senderType, asked = request.header.asked),
