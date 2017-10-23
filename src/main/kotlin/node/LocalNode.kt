@@ -5,6 +5,8 @@ import com.google.gson.reflect.TypeToken
 import data.Base
 import data.Book
 import protocol.Protocol
+import protocol.Query
+import protocol.asQuery
 import protocol.message.*
 import protocol.tcp.TCPConnection
 import protocol.udp.MulticastListener
@@ -14,6 +16,7 @@ import util.randomIndex
 import java.net.ServerSocket
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KProperty1
 
 
 class LocalNode(override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
@@ -82,13 +85,13 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
         history[request.uid] = System.currentTimeMillis()
         asked.add(port)
         println("processing query $query with level $level")
-        val list = Collections.synchronizedList(mutableListOf<Book>())
+        var list = Collections.synchronizedList(mutableListOf<Book>())
+        val queryProcessor : QueryProcessor = DefaultQueryProcessor(request.query)
         list.addAll(data)
         val jobs = Collections.synchronizedList(mutableListOf<Thread>())
         if (level > 0) {
             nodes.mapTo(jobs) {
                 Thread {
-                    println("launching coroutine to asks nodes...")
                     if (!asked.contains(it.port)) {
                         val data = it.getData(DataMessage(DataHeader(SenderType.NODE, messageType = MessageType.TCP_QUERY, asked = asked),
                                 uid = uid, query = query, level = level - 1))
@@ -103,8 +106,11 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
         jobs.forEach {
             it.join()
         }
+        if (request.header.senderType == SenderType.CLIENT)
+            list = queryProcessor.applySort(data)
         return DataMessage(DataHeader(SenderType.NODE, MessageType.TCP_RESULT, asked = asked), uid, query, level, list)
     }
+
 
     fun start() {
         initData()

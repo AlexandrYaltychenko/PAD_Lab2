@@ -41,12 +41,12 @@ class DiscoveryService {
             val maven = nodes.maxBy { it.connectionsCount }
             val data = maven?.getData(DataMessage(DataHeader(senderType = SenderType.CLIENT,
                     asked = mutableSetOf()), uid = UUID.randomUUID().toString(),
-                    query = "", level = level))?.data ?: listOf()
+                    query = "ORDER (author)", level = level))?.data ?: listOf()
             println("got data (${data.size} items):")
             for (book in data)
                 println(book)
         } else
-            println("no asked responsed")
+            println("no asked response")
     }
 }
 
