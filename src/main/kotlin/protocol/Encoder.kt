@@ -53,7 +53,7 @@ fun String.asQuery(): Query? {
             currentSet = when (it.toLowerCase()) {
                 "order" -> order
                 "group" -> group
-                "where" -> filter
+                "filter" -> filter
                 else -> select
             }
         } else {

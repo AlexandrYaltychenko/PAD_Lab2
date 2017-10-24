@@ -6,14 +6,13 @@ import protocol.Query
 import protocol.asQuery
 import java.util.Comparator
 
-class DefaultQueryProcessor(strQuery : String) : QueryProcessor{
-    private val query : Query = strQuery.asQuery() ?: Query()
+class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
+    private val query: Query = strQuery.asQuery() ?: Query()
 
     override fun applySort(data: List<Book>): MutableList<Book> {
         val comparator = Comparator<Book> { o1, o2 ->
             query.sort.forEach {
                 if (Protocol.QUERY_FIELD.contains(it)) {
-                    println("comparing by $it")
                     val result = when (it) {
                         "author" -> o1.author.compareTo(o2.author)
                         "desc" -> o1.desc.compareTo(o2.desc)
@@ -34,8 +33,68 @@ class DefaultQueryProcessor(strQuery : String) : QueryProcessor{
     }
 
     override fun applyFilter(data: List<Book>): MutableList<Book> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val params = query.filter
+        println("params $params")
+        val result = data.toMutableList()
+        if (params.isEmpty())
+            return result
+        params.forEach { param ->
+            val items = param.split(*Protocol.FILTER_OPERATORS.toTypedArray())
+            println("items $items")
+            if (items.size < 2 || Protocol.QUERY_FIELD.contains(items[0])) {
+                val operator = param.findAnyOf(Protocol.FILTER_OPERATORS)?.second
+                //println("operator $operator")
+                operator?.let {
+                    val iterator = result.iterator()
+                    while (iterator.hasNext()) {
+                        val book = iterator.next()
+                        if (!when (items[0]) {
+                            "author" -> filterString(book.author, items[1], operator)
+                            "title" -> filterString(book.title, items[1], operator)
+                            "desc" -> filterString(book.desc, items[1], operator)
+                            "year" -> filterInt(book.year, items[1].toInt(), operator)
+                            else -> false
+                        }) {
+                            println("removing $book")
+                            iterator.remove()
+                        } else
+                            println("not removing $book")
+                        println("size ${result.size}")
+                    }
+                }
+            }
+        }
+        return result
     }
+
+    private fun filterInt(a: Int, b: Int, op: String): Boolean {
+        return when (op) {
+            ">" -> a > b
+            "<" -> a < b
+            ">=" -> a >= b
+            "<=" -> a <= b
+            "=" -> a == b
+            else -> false
+        }
+    }
+
+    private fun filterString(a: String, b: String, op: String): Boolean {
+        return when (op) {
+            ">" -> a > b
+            "<" -> a < b
+            ">=" -> a >= b
+            "<=" -> a <= b
+            "=" -> {
+                return if (b.contains('*')) {
+                    println("regex check $a to $b")
+                    a.matches(b.toRegex())
+                } else
+                    a == b
+            }
+            else -> false
+        }
+    }
+
 
     override fun applySelect(data: List<Book>): MutableList<Book> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

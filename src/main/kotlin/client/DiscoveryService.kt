@@ -18,7 +18,7 @@ class DiscoveryService {
 
     }
 
-    suspend fun sendMulticast() {
+    suspend fun sendMulticast(query: String) {
         val level = 1
         val sender = MulticastSender(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
         val msg = DiscoveryMessage(DiscoveryHeader())
@@ -41,7 +41,7 @@ class DiscoveryService {
             val maven = nodes.maxBy { it.connectionsCount }
             val data = maven?.getData(DataMessage(DataHeader(senderType = SenderType.CLIENT,
                     asked = mutableSetOf()), uid = UUID.randomUUID().toString(),
-                    query = "ORDER (author)", level = level))?.data ?: listOf()
+                    query = query, level = level))?.data ?: listOf()
             println("got data (${data.size} items):")
             for (book in data)
                 println(book)

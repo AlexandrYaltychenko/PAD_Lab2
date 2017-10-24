@@ -5,8 +5,6 @@ import com.google.gson.reflect.TypeToken
 import data.Base
 import data.Book
 import protocol.Protocol
-import protocol.Query
-import protocol.asQuery
 import protocol.message.*
 import protocol.tcp.TCPConnection
 import protocol.udp.MulticastListener
@@ -16,7 +14,6 @@ import util.randomIndex
 import java.net.ServerSocket
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.reflect.KProperty1
 
 
 class LocalNode(override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
@@ -86,8 +83,9 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
         asked.add(port)
         println("processing query $query with level $level")
         var list = Collections.synchronizedList(mutableListOf<Book>())
-        val queryProcessor : QueryProcessor = DefaultQueryProcessor(request.query)
-        list.addAll(data)
+        val queryProcessor: QueryProcessor = DefaultQueryProcessor(request.query)
+        list.addAll(queryProcessor.applyFilter(data))
+        println("data = ${data.size}  list = ${list.size}")
         val jobs = Collections.synchronizedList(mutableListOf<Thread>())
         if (level > 0) {
             nodes.mapTo(jobs) {
@@ -107,7 +105,7 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
             it.join()
         }
         if (request.header.senderType == SenderType.CLIENT)
-            list = queryProcessor.applySort(data)
+            list = queryProcessor.applySort(list)
         return DataMessage(DataHeader(SenderType.NODE, MessageType.TCP_RESULT, asked = asked), uid, query, level, list)
     }
 
