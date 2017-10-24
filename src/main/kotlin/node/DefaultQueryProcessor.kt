@@ -5,6 +5,7 @@ import protocol.Protocol
 import protocol.Query
 import protocol.asQuery
 import java.util.Comparator
+import kotlin.reflect.KProperty1
 
 class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
     private val query: Query = strQuery.asQuery() ?: Query()
@@ -29,7 +30,31 @@ class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
     }
 
     override fun applyGroup(data: List<Book>): MutableList<Book> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val result = data.toMutableList()
+        if (query.group.isEmpty())
+            return result
+        println("grouping by ${query.group}")
+        val params = query.group
+                .filter { it -> Protocol.QUERY_FIELD.contains(it) }
+                .map { it ->
+                    when (it) {
+                        "author" -> Book::author
+                        "title" -> Book::title
+                        "desc" -> Book::desc
+                        else -> Book::year
+                    }
+                }
+        val iterator = result.iterator()
+        val group = mutableSetOf<Int>()
+        while (iterator.hasNext()) {
+            val book = iterator.next()
+            val hash = params.map { it.get(book) }.hashCode()
+            if (group.contains(hash))
+                iterator.remove()
+            else
+                group.add(hash)
+        }
+        return result
     }
 
     override fun applyFilter(data: List<Book>): MutableList<Book> {
@@ -95,8 +120,4 @@ class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
         }
     }
 
-
-    override fun applySelect(data: List<Book>): MutableList<Book> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }

@@ -84,7 +84,7 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
         println("processing query $query with level $level")
         var list = Collections.synchronizedList(mutableListOf<Book>())
         val queryProcessor: QueryProcessor = DefaultQueryProcessor(request.query)
-        list.addAll(queryProcessor.applyFilter(data))
+        list.addAll(queryProcessor.applyGroup(queryProcessor.applyFilter(data)))
         println("data = ${data.size}  list = ${list.size}")
         val jobs = Collections.synchronizedList(mutableListOf<Thread>())
         if (level > 0) {
@@ -105,7 +105,7 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
             it.join()
         }
         if (request.header.senderType == SenderType.CLIENT)
-            list = queryProcessor.applySort(list)
+            list = queryProcessor.applyGroup(queryProcessor.applySort(list))
         return DataMessage(DataHeader(SenderType.NODE, MessageType.TCP_RESULT, asked = asked), uid, query, level, list)
     }
 
