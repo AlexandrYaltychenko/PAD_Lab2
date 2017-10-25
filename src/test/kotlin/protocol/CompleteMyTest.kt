@@ -4,7 +4,7 @@ import client.DiscoveryService
 import kotlinx.coroutines.experimental.runBlocking
 import main
 
-internal class CompleteTest {
+internal class CompleteMyTest {
     @org.junit.jupiter.api.Test
     fun testAll() {
         Thread {

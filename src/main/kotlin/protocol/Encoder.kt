@@ -51,7 +51,7 @@ fun String.asQuery(): Query? {
     parsedQuery.forEach {
         if (Protocol.DSL_KEYWORDS.contains(it)) {
             currentSet = when (it.toLowerCase()) {
-                "order" -> order
+                "sort" -> order
                 "group" -> group
                 "filter" -> filter
                 else -> select
