@@ -16,12 +16,11 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 
-class LocalNode(override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
+open class LocalNode(override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
     private val data = mutableListOf<Book>()
     private val history = ConcurrentHashMap<String, Long>()
 
-
-    private fun handleMulticasts() {
+    protected open fun handleMulticasts() {
         val client = MulticastListener(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
         while (true) {
             println("waiting for a multicast...")
@@ -123,8 +122,7 @@ class LocalNode(override val port: Int, private val nodes: List<Node>, private v
     private fun initData() {
         val random = Random()
         val base: Base = Gson().fromJson(StringFromFile("base.json"), (object : TypeToken<Base>() {}).type)
-        val itemsCount = if (dataCount > 0) dataCount else random.randomIndex(3, 15)
-        for (i in 0 until itemsCount) {
+        for (i in 0 until dataCount) {
             data.add(Book(base.titles[random.randomIndex(max = base.titles.size)],
                     base.authors[random.randomIndex(max = base.authors.size)],
                     base.desc[random.randomIndex(max = base.desc.size)],

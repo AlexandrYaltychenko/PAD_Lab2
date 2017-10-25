@@ -1,7 +1,13 @@
 package client
 
 import kotlinx.coroutines.experimental.runBlocking
+import protocol.asQuery
 
-fun main(args : Array<String>) = runBlocking{
-    DiscoveryService().sendMulticast("GROUP (author,desc) ORDER (author) FILTER (author=.*,year<=2100)")
+fun main(args: Array<String>) = runBlocking {
+    println("enter your query...")
+    val query = readLine()
+    if (query?.asQuery() != null) {
+        Client().performQuery(query)
+    } else
+        println("The query you entered is not valid")
 }
