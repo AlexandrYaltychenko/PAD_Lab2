@@ -10,6 +10,7 @@
 /android-studio/sdk
 out/
 /tmp
+gradle/
 workspace.xml
 *.versionsBackup
 /idea/testData/debugger/tinyApp/classes*
