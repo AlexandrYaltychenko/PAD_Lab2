@@ -20,6 +20,5 @@ class Client {
             for (book in data)
                 println(book)
         }
-
     }
 }

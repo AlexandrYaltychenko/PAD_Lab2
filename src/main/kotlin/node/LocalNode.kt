@@ -108,7 +108,6 @@ open class LocalNode(override val port: Int, private val nodes: List<Node>, priv
         return DataMessage(DataHeader(SenderType.NODE, MessageType.TCP_RESULT, asked = asked), uid, query, level, list)
     }
 
-
     fun start() {
         initData()
         Thread {

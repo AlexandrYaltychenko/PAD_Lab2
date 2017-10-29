@@ -16,7 +16,7 @@ fun main(args: Array<String>) = runBlocking {
     result.forEach {
         Thread {
             println("running node at ${it.port}...")
-            LocalNode(it.port, it.nodes.map { RemoteNode(it.port, it.host) }).start()
+            LocalNode(it.port, it.nodes.map { RemoteNode(it.port, it.host) }, dataCount = it.dataCount).start()
         }.start()
     }
 }
