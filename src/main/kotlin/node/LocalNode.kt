@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 open class LocalNode(final override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
     private val history = ConcurrentHashMap<String, Long>()
-    private val storage : Storage = DefaultStorage(port,dataCount)
-
+    private val storage: Storage = DefaultStorage(port, dataCount)
+    private val timer: Timer = Timer(true)
     protected open fun handleMulticasts() {
         val client = MulticastListener(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
         while (true) {
@@ -115,7 +115,19 @@ open class LocalNode(final override val port: Int, private val nodes: List<Node>
         Thread {
             handleTCP()
         }.start()
+        initTimer()
     }
 
+    fun initTimer(){
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val iterator = history.iterator()
+                while (iterator.hasNext()){
+                    if (iterator.next().value < System.currentTimeMillis() - Protocol.QUERY_PROCESSED_TIMEOUT)
+                        iterator.remove()
+                }
+            }
+        }, Protocol.QUERY_PROCESSED_TIMEOUT, Protocol.QUERY_PROCESSED_TIMEOUT)
+    }
 
 }
