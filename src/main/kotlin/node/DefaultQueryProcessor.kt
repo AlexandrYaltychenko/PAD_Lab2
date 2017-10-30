@@ -18,8 +18,8 @@ class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
                 for (field in Book::class.memberProperties) {
                     fields[field.name] = field
                 }
-                val param1 = fields[it]?.get(o1)
-                val param2 = fields[it]?.get(o2)
+                val param1 = fields[it]?.get(if (query.sortAsc) o1 else o2)
+                val param2 = fields[it]?.get(if (query.sortAsc) o2 else o1)
                 val result: Int = when (param1) {
                     is Int -> when (param2) {
                         is Int -> param1.compareTo(param2)

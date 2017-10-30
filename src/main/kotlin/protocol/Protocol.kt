@@ -11,6 +11,6 @@ object Protocol {
     val DISCOVERY_MESSAGE_SCHEMA_ADR = "schema/discovery_message.json"
     val DATA_MESSAGE_SCHEMA_ADR = "schema/data_message.json"
     val DEFAULT_DISCOVERY_TIMEOUT = 5000L
-    val DSL_KEYWORDS = setOf("SELECT", "SORT", "FILTER", "GROUP")
+    val DSL_KEYWORDS = setOf("SELECT", "SORT", "FILTER", "GROUP", "DESC","ASC")
     val FILTER_OPERATORS = setOf("<=",">=","=","<",">")
 }

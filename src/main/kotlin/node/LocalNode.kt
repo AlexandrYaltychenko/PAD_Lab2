@@ -16,9 +16,9 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 
-open class LocalNode(override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
-    private val data = mutableListOf<Book>()
+open class LocalNode(final override val port: Int, private val nodes: List<Node>, private val dataCount: Int = 0) : Node {
     private val history = ConcurrentHashMap<String, Long>()
+    private val storage : Storage = DefaultStorage(port,dataCount)
 
     protected open fun handleMulticasts() {
         val client = MulticastListener(Protocol.MULTICAST_PORT, Protocol.MULTICAST_ADR)
@@ -83,8 +83,8 @@ open class LocalNode(override val port: Int, private val nodes: List<Node>, priv
         println("processing query $query with level $level")
         var list = Collections.synchronizedList(mutableListOf<Book>())
         val queryProcessor: QueryProcessor = DefaultQueryProcessor(request.query)
-        list.addAll(queryProcessor.applyGroup(queryProcessor.applyFilter(data)))
-        println("data = ${data.size}  list = ${list.size}")
+        list.addAll(queryProcessor.applyGroup(queryProcessor.applyFilter(storage.getData())))
+        println("data = ${storage.count}  list = ${list.size}")
         val jobs = Collections.synchronizedList(mutableListOf<Thread>())
         if (level > 0) {
             nodes.mapTo(jobs) {
@@ -109,7 +109,6 @@ open class LocalNode(override val port: Int, private val nodes: List<Node>, priv
     }
 
     fun start() {
-        initData()
         Thread {
             handleMulticasts()
         }.start()
@@ -118,16 +117,5 @@ open class LocalNode(override val port: Int, private val nodes: List<Node>, priv
         }.start()
     }
 
-    private fun initData() {
-        val random = Random()
-        val base: Base = Gson().fromJson(StringFromFile("base.json"), (object : TypeToken<Base>() {}).type)
-        for (i in 0 until dataCount) {
-            data.add(Book(base.titles[random.randomIndex(max = base.titles.size)],
-                    base.authors[random.randomIndex(max = base.authors.size)],
-                    base.desc[random.randomIndex(max = base.desc.size)],
-                    Math.abs(Random().nextInt() % 115 + 1900),
-                    port))
-        }
-        println("Node $port initialized with ${data.size} data entries")
-    }
+
 }

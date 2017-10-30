@@ -43,18 +43,18 @@ fun String.asDataMessage(): DataMessage? {
 fun String.asQuery(): Query? {
     val query = this.removeSurrounding(" ")
     val parsedQuery = query.split("(", ")", ",").map { it.trim() }.filter { !it.contains(" ") && it.isNotEmpty() }
-    val select = mutableSetOf<String>()
     val order = mutableSetOf<String>()
     val group = mutableSetOf<String>()
     val filter = mutableSetOf<String>()
     var currentSet: MutableSet<String>? = null
+    var sortAsc = true
     parsedQuery.forEach {
         if (Protocol.DSL_KEYWORDS.contains(it)) {
-            currentSet = when (it.toLowerCase()) {
-                "sort" -> order
-                "group" -> group
-                "filter" -> filter
-                else -> select
+            when (it.toLowerCase()) {
+                "sort" -> currentSet = order
+                "group" -> currentSet = group
+                "filter" -> currentSet = filter
+                "desc" -> sortAsc = false
             }
         } else {
             if (currentSet != null) {
@@ -65,5 +65,5 @@ fun String.asQuery(): Query? {
             }
         }
     }
-    return Query(order, filter, group, select)
+    return Query(sort = order, sortAsc = sortAsc, filter = filter, group = group)
 }
