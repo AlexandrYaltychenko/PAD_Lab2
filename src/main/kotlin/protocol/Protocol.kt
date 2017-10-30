@@ -13,5 +13,5 @@ object Protocol {
     val DEFAULT_DISCOVERY_TIMEOUT = 5000L
     val QUERY_PROCESSED_TIMEOUT = 60000L
     val DSL_KEYWORDS = setOf("SELECT", "SORT", "FILTER", "GROUP", "DESC","ASC")
-    val FILTER_OPERATORS = setOf("<=",">=","=","<",">")
+    val FILTER_OPERATORS = setOf("<=",">=","=","<",">","!=")
 }

@@ -21,7 +21,6 @@ fun String.asDiscoveryMessage(): DiscoveryMessage? {
         val json = JSONObject(this)
         schema.validate(json)
         ObjectMapper().registerModule(JsonOrgModule()).convertValue(json, DiscoveryMessage::class.java)
-        //Gson().fromJson(this, DiscoveryMessage::class.java)
     } catch (e: Exception) {
         println("cannot process discovery message: ${e.message}")
         null

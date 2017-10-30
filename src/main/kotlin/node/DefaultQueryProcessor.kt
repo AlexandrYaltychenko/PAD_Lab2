@@ -111,6 +111,7 @@ class DefaultQueryProcessor(strQuery: String) : QueryProcessor {
             "<" -> a < b
             ">=" -> a >= b
             "<=" -> a <= b
+            "!=" -> a != b
             "=" -> when (T::class) {
                 String::class -> {
                     return if ((b as String).contains('*')) {
